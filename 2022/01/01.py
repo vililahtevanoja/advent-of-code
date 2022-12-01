@@ -1,10 +1,9 @@
 data = []
 with open("input.txt") as f:
-    for line in  f.readlines():
-        data.append(line.strip())
-grouped_data = []
+    data = [l.strip() for l in f.readlines()]
 
-acc_data = [] 
+grouped_data = []
+acc_data = []
 for line in data:
     if line == "":
         grouped_data.append(acc_data)
