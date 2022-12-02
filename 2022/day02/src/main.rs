@@ -55,8 +55,6 @@ impl RoundP1 {
     fn score(self) -> u64 {
         self.play() as u64 + self.own as u64
     }
-
-   
 }
 
 
