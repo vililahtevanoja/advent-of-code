@@ -48,7 +48,7 @@ impl RoundP1 {
     fn play(self) -> RoundResult {
         match (self.own, self.opponent) {
             (Hand::ROCK, Hand::SCISSORS) | (Hand::PAPER, Hand::ROCK) | (Hand::SCISSORS, Hand::PAPER) => RoundResult::WIN,
-            (Hand::ROCK, Hand::PAPER) | (Hand::PAPER, Hand::SCISSORS) | (Hand::SCISSORS, Hand::ROCK) => RoundResult::LOSS,
+            (Hand::SCISSORS, Hand::ROCK) | (Hand::ROCK, Hand::PAPER) | (Hand::PAPER, Hand::SCISSORS) => RoundResult::LOSS,
             _ => RoundResult::DRAW,
         }
     }
