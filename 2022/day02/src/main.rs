@@ -32,7 +32,7 @@ impl Goal {
             "X" => Goal::LOSS,
             "Y" => Goal::DRAW,
             "Z" => Goal::WIN,
-            _ => panic!("Hand::from({})", s)
+            _ => panic!("Hand::from(\"{}\")", s)
         }
     }
 }
