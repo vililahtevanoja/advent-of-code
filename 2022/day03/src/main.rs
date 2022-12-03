@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashSet};
 
 #[derive(Debug, Clone)]
 struct Rucksack {
@@ -26,22 +26,14 @@ impl Rucksack {
   }
 
   fn combine_compartments(self) -> String {
-    let mut s = String::new();
-    s.push_str(&self.first_compartment);
-    s.push_str(&self.second_compartment);
-    s
+    self.first_compartment + &self.second_compartment
   }
 
   fn find_common_item_from_three(self, r2: Rucksack, r3: Rucksack) -> Option<char> {
-    let r1= self.combine_compartments();
+    let r1_chars: HashSet<char> = HashSet::from_iter(self.combine_compartments().chars());
     let r2_chars: HashSet<char> = HashSet::from_iter(r2.combine_compartments().chars());
     let r3_chars: HashSet<char> = HashSet::from_iter(r3.combine_compartments().chars());
-    for c in r1.chars() {
-      if r2_chars.contains(&c) && r3_chars.contains(&c) {
-        return Some(c)
-      }
-    } 
-    panic!("Could not find common in {}-{}-{}", r1, r2_chars.into_iter().collect::<String>(), r3_chars.into_iter().collect::<String>());
+    (&(&r1_chars & &r2_chars) & &r3_chars).iter().next().copied()
   }
 }
 
