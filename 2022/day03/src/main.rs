@@ -79,5 +79,5 @@ fn test_part1() {
 #[test]
 fn test_part2() {
   let data = include_str!("../example.txt");
-  assert_eq!(solve2(data), 1);
+  assert_eq!(solve2(data), 70);
 }
