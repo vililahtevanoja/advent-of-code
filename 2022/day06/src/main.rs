@@ -2,27 +2,29 @@ use std::collections::HashSet;
 
 const PACKET_START_MARKER_SIZE: usize = 4;
 
-fn first_unique_window(data: &str, window_size: usize) -> usize {
+fn first_unique_window_ends_at(data: &str, window_size: usize) -> usize {
   let data_slice = &data.chars().collect::<Vec<char>>()[..];
   let data_windows = data_slice.windows(window_size);
+  let mut hs : HashSet<&char>= HashSet::with_capacity(window_size);
   data_windows.enumerate().find_map(|(i,chars)| {
-    let hs : HashSet<&char>= HashSet::from_iter(chars.iter());
-    if hs.len() != window_size {
-      None
-    } else {
-      Some(i+window_size)
+    hs.extend(chars.iter());
+    let hs_len = hs.len();
+    hs.clear();
+    match hs_len {
+      _ if hs_len == window_size => Some(i+window_size),
+      _ => None,
     }
   }).unwrap()
 }
 
 fn solve1(data: &str) -> usize {
-  first_unique_window(data, PACKET_START_MARKER_SIZE)
+  first_unique_window_ends_at(data, PACKET_START_MARKER_SIZE)
 }
 
 const MESSAGE_START_MARKER_SIZE: usize = 14;
 
 fn solve2(data: &str) -> usize {
-  first_unique_window(data, MESSAGE_START_MARKER_SIZE)
+  first_unique_window_ends_at(data, MESSAGE_START_MARKER_SIZE)
 }
 
 
