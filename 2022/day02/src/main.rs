@@ -84,30 +84,26 @@ impl RoundWithGoal {
     }
 }
 
-
-
-fn parse(data: &str) -> Vec<&str> {
+fn parse(data: &str) -> Vec<(&str, &str)> {
     data
     .split("\n")
-    .filter(|l| !l.is_empty())
+    .filter_map(|l|l.split_once(" "))
     .collect() 
 }
 
-fn solve1(data: &str) -> u64 {
-  let parsed = parse(data);
-  let rounds = parsed.iter()
+fn solve1(data: &Vec<(&str, &str)>) -> u64 {
+  let rounds = data.iter()
     .map(|l| {
-      let (opponent, own) = l.split_once(" ").unwrap();
+      let (opponent, own) = l;
       RoundP1 { opponent: Hand::from(opponent), own: Hand::from(own)}
     });
   rounds.map(|r| r.score()).sum()
 }
 
-fn solve2(data: &str) -> u64 {
-  let parsed = parse(data);
-  let round_goals = parsed.iter()
+fn solve2(data: &Vec<(&str, &str)>) -> u64 {
+  let round_goals = data.iter()
     .map(|l| {
-      let (opponent, goal) = l.split_once(" ").unwrap();
+      let (opponent, goal) = l;
       RoundWithGoal {opponent: Hand::from(opponent), goal: Goal::from(goal)}
     });
   
@@ -121,18 +117,19 @@ fn solve2(data: &str) -> u64 {
 
 fn main() {
     let data = include_str!("../input.txt");
-    println!("Part 1: {}", solve1(data));
-    println!("Part 2: {}", solve2(data));
+    let parsed = parse(data);
+    println!("Part 1: {}", solve1(&parsed));
+    println!("Part 2: {}", solve2(&parsed));
 }
 
 #[test]
 fn test_part1() {
     let data = include_str!("../example.txt");
-    assert_eq!(solve1(data), 15)
+    assert_eq!(solve1(&parse(&data)), 15)
 }
 
 #[test]
 fn test_part2() {
     let data = include_str!("../example.txt");
-    assert_eq!(solve2(data), 12)
+    assert_eq!(solve2(&parse(&data)), 12)
 }
