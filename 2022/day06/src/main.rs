@@ -1,3 +1,6 @@
+#![feature(test)]
+extern crate test;
+
 use std::collections::HashSet;
 
 const PACKET_START_MARKER_SIZE: usize = 4;
@@ -34,14 +37,32 @@ fn main() {
   println!("Part 2: {}", solve2(data));
 }
 
-#[test]
-fn test_part1() {
-  let data = include_str!("../example.txt");
-  assert_eq!(solve1(data), 7);
+mod tests {
+  use super::*;
+  use test::Bencher;
+
+  #[test]
+  fn test_part1() {
+      let data = include_str!("../example.txt");
+      assert_eq!(solve1(data), 7)
+  }
+
+  #[test]
+  fn test_part2() {
+      let data = include_str!("../example.txt");
+      assert_eq!(solve2(data), 19)
+  }
+
+  #[bench]
+  fn bench_part1(b: &mut Bencher) {
+      let data = include_str!("../example.txt");
+      b.iter(|| solve1(data));
+  }
+  
+  #[bench]
+  fn bench_part2(b: &mut Bencher) {
+      let data = include_str!("../example.txt");
+      b.iter(|| solve2(data));
+  }
 }
 
-#[test]
-fn test_part2() {
-  let data = include_str!("../example.txt");
-  assert_eq!(solve2(data), 19);
-}

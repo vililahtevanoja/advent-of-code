@@ -1,3 +1,5 @@
+#![feature(test)]
+extern crate test;
 
 #[derive(Debug, Clone, Copy)]
 struct Section {
@@ -50,14 +52,31 @@ fn main() {
   println!("Part 2: {}", solve2(data));
 }
 
-#[test]
-fn test_part1() {
-  let data = include_str!("../example.txt");
-  assert_eq!(solve1(data), 2)
-}
+mod tests {
+  use super::*;
+  use test::Bencher;
 
-#[test]
-fn test_part2() {
-  let data = include_str!("../example.txt");
-  assert_eq!(solve2(data), 4);
+  #[test]
+  fn test_part1() {
+      let data = include_str!("../example.txt");
+      assert_eq!(solve1(data), 2)
+  }
+
+  #[test]
+  fn test_part2() {
+      let data = include_str!("../example.txt");
+      assert_eq!(solve2(data), 4)
+  }
+
+  #[bench]
+  fn bench_part1(b: &mut Bencher) {
+      let data = include_str!("../example.txt");
+      b.iter(|| solve1(data));
+  }
+  
+  #[bench]
+  fn bench_part2(b: &mut Bencher) {
+      let data = include_str!("../example.txt");
+      b.iter(|| solve2(data));
+  }
 }

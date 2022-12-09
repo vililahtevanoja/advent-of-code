@@ -1,3 +1,5 @@
+#![feature(test)]
+extern crate test;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 enum Hand {
@@ -122,14 +124,32 @@ fn main() {
     println!("Part 2: {}", solve2(&parsed));
 }
 
-#[test]
-fn test_part1() {
-    let data = include_str!("../example.txt");
-    assert_eq!(solve1(&parse(&data)), 15)
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test::Bencher;
 
-#[test]
-fn test_part2() {
-    let data = include_str!("../example.txt");
-    assert_eq!(solve2(&parse(&data)), 12)
+    #[test]
+    fn test_part1() {
+        let data = include_str!("../example.txt");
+        assert_eq!(solve1(&parse(&data)), 15)
+    }
+
+    #[test]
+    fn test_part2() {
+        let data = include_str!("../example.txt");
+        assert_eq!(solve2(&parse(&data)), 12)
+    }
+
+    #[bench]
+    fn bench_part1(b: &mut Bencher) {
+        let data = include_str!("../example.txt");
+        b.iter(|| solve1(&parse(&data)));
+    }
+    
+    #[bench]
+    fn bench_part2(b: &mut Bencher) {
+        let data = include_str!("../example.txt");
+        b.iter(|| solve2(&parse(&data)));
+    }
 }
