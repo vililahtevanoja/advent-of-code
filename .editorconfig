@@ -14,7 +14,7 @@ insert_final_newline = false
 # 4 space indentation
 [*.rs]
 indent_style = space
-indent_size = 2
+indent_size = 4
 
 [*.py]
 indent_style = space
