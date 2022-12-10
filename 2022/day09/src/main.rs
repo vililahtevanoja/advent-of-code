@@ -9,15 +9,11 @@ struct Coordinate {
   x: i64,
 }
 
-enum Diagonality {
-  TopRight,
-  BottomRight,
-  BottomLeft,
-  TopLeft,
-}
-
-
 impl Coordinate {
+  fn is_adjacent_to(&self, coord: &Coordinate) -> bool {
+    self.y.abs_diff(coord.y) <= 1 && self.x.abs_diff(coord.x) <= 1
+  }
+
   fn mv_once(&self, m: &Movement) -> Coordinate {
     match m {
       Movement::Right(_) => Coordinate { y: self.y, x: self.x+1 },
@@ -91,12 +87,6 @@ impl Movement {
   
 }
 
-impl Coordinate {
-  fn is_adjacent_to(&self, coord: &Coordinate) -> bool {
-    self.y.abs_diff(coord.y) <= 1 && self.x.abs_diff(coord.x) <= 1
-  }
-}
-
 fn solve1(data: &str) -> usize {
   let movements = data.lines().map(Movement::from);
   let mut tail_set: HashSet<Coordinate> = HashSet::new();
@@ -125,19 +115,20 @@ fn solve2(data: &str) -> usize {
   for movement in movements {
     for _ in 0..movement.count() {
       let mut previous: Option<Coordinate> = None;
-      let mut previous_last = Coordinate {y:0,x:0};
       for knot in knots.iter_mut() {
         if let Some(ref prev_knot) = previous {
           if !knot.is_adjacent_to(prev_knot) {
-            previous_last = knot.clone();
-            *knot = previous_last; 
+            if knot.is_in_same_row_or_column(&prev_knot) {
+              *knot = knot.move_directly_towards(&prev_knot);
+            } else {
+              *knot = knot.move_diagonally_towards(&prev_knot);
+            } 
           }
           previous = Some(knot.clone());
         } else { // head
           let old = knot.clone();
           *knot = knot.mv_once(&movement);
           previous = Some(knot.clone());
-          previous_last = old;
         }
       }
       tail_set.insert(knots.last().unwrap().clone());
@@ -176,6 +167,13 @@ mod tests {
     let data1 = include_str!("../example2.txt");
     assert_eq!(solve2(data1), 36)
   }
+
+  #[test]
+  fn test_part2_regression() {
+    let data = include_str!("../input.txt");
+    assert_eq!(solve2(data), 2449)
+  }
+
   #[test]
   fn test_move_diagonally_towards() {
     let target = Coordinate {y: 1, x: 4};
