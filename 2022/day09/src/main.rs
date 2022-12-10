@@ -33,7 +33,7 @@ impl Coordinate {
 
   fn move_diagonally_towards(&self, c: &Coordinate) -> Coordinate {
     assert!(!self.is_in_same_row_or_column(c));
-    match (self.y > c.y, self.x > self.y) {
+    match (self.y < c.y, self.x < c.x) {
       (true, true) => Coordinate {y: self.y+1, x: self.x+1},
       (true, false) => Coordinate { y: self.y+1, x: self.x-1 },
       (false, true) => Coordinate { y: self.y-1, x: self.x+1 },
@@ -104,10 +104,13 @@ fn solve1(data: &str) -> usize {
     let mut head = Coordinate {y: 0, x: 0};
     for movement in movements {
         for _ in 0..movement.count() {
-            let head_last = head.clone();
             head = head.mv_once(&movement);
             if !tail.is_adjacent_to(&head) {
-                tail = head_last;
+                if tail.is_in_same_row_or_column(&head) {
+                  tail = tail.move_directly_towards(&head);
+                } else {
+                  tail = tail.move_diagonally_towards(&head);
+                }
             }
             tail_set.insert(tail.clone());
         }
@@ -126,9 +129,8 @@ fn solve2(data: &str) -> usize {
             for knot in knots.iter_mut() {
                 if let Some(ref prev_knot) = previous {
                    if !knot.is_adjacent_to(prev_knot) {
-                        let old = knot.clone();
+                        previous_last = knot.clone();
                        *knot = previous_last; 
-                       previous_last = old;
                    }
                    previous = Some(knot.clone());
                 } else { // head
@@ -162,11 +164,24 @@ mod tests {
     }
 
     #[test]
+    fn test_part1_regression() {
+        let data = include_str!("../input.txt");
+        assert_eq!(solve1(data), 6236)
+    }
+
+    #[test]
     fn test_part2() {
         let data1 = include_str!("../example.txt");
         assert_eq!(solve2(data1), 1);
         let data1 = include_str!("../example2.txt");
         assert_eq!(solve2(data1), 36)
+    }
+    #[test]
+    fn test_move_diagonally_towards() {
+      let target = Coordinate {y: 1, x: 4};
+      let start = Coordinate {y: 0, x: 2};
+      let expected = Coordinate {y: 1, x: 3};
+      assert_eq!(start.move_diagonally_towards(&target), expected);
     }
 
     #[bench]
