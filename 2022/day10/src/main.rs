@@ -35,58 +35,55 @@ fn solve1(data: &str) -> i64 {
   let ops = data.lines().map(Operation::from);
   let mut cycle = 0usize;
   let mut counter = 1i64;
-  let mut cycle_to_counter: Vec<(usize, i64)> = Vec::new();
+  let mut cycle_map: HashMap<usize, i64> = HashMap::with_capacity(240);
   for op in ops {
-     match op {
-      Operation::Noop => {
+    match op {
+    Operation::Noop => {
+      cycle = cycle+1;
+      cycle_map.insert(cycle, counter);
+    },
+    Operation::Addx(n) => {
+      for _ in 0..op.get_cycles() {
         cycle = cycle+1;
-        cycle_to_counter.push((cycle.clone(), counter.clone()));
-      },
-      Operation::Addx(n) => {
-        for _ in 0..Operation::Addx(n).get_cycles() {
-          cycle = cycle+1;
-          cycle_to_counter.push((cycle.clone(), counter.clone()));
-        }
-        counter = counter + n;
+        cycle_map.insert(cycle, counter);
       }
-     }
+      counter = counter + n;
+    }
+    }
   }
-  let cycle_map: HashMap<usize, i64> = cycle_to_counter.into_iter().collect();
-  let mut sum = 0i64;
-  let checkpoints: Vec<usize> = vec![20, 60, 100, 140, 180, 220];
-  for cp in checkpoints.iter() {
-    let counter = cycle_map.get(cp).unwrap();
-    sum = sum + (*cp as i64 * counter);
-  }
-  sum 
+  let checkpoints: [usize; 6] = [20, 60, 100, 140, 180, 220];
+  checkpoints.iter()
+    .fold(0i64, |acc, cp| {
+      acc + ((*cp as i64) * cycle_map.get(cp).unwrap())
+    })
 }
 
 fn solve2(data: &str) -> String {
   let ops = data.lines().map(Operation::from);
   let mut cycle = 0usize;
   let mut counter = 1i64;
-  let mut cycle_to_counter: Vec<(usize, i64)> = Vec::new();
+  let mut cycle_to_counter: Vec<(usize, i64)> = Vec::with_capacity(240);
   for op in ops {
-     match op {
+    match op {
       Operation::Noop => {
-        cycle = cycle+1;
-        cycle_to_counter.push((cycle.clone(), counter.clone()));
+        cycle += 1;
+        cycle_to_counter.push((cycle, counter));
       },
       Operation::Addx(n) => {
-        for _ in 0..Operation::Addx(n).get_cycles() {
-          cycle = cycle+1;
-          cycle_to_counter.push((cycle.clone(), counter.clone()));
+        for _ in 0..2 {
+          cycle += 1;
+          cycle_to_counter.push((cycle, counter));
         }
         counter = counter + n;
       }
-     }
+    }
   }
-  assert_eq!(cycle_to_counter.len(), 240);
   let mut screen = [[Pixel::Dark;40]; 6];
   for (cycle, counter) in cycle_to_counter.iter() {
     let column = (cycle-1) % 40;
     let row = (cycle-1) / 40;
-    if (counter-1..counter+2).contains(&(column as i64)) {
+    let column_i64 = column as i64; 
+    if column_i64 >= counter-1 && column_i64 <= counter+1 {
       screen[row][column] = Pixel::Lit;
     } 
   }
@@ -102,7 +99,6 @@ fn solve2(data: &str) -> String {
     s = s + "\n";
   }
   s
-
 }
 
 fn main() {
