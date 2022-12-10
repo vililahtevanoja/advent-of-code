@@ -29,7 +29,6 @@ impl Operation {
       Operation::Addx(_) => 2,
     }
   }
-
 }
 
 fn solve1(data: &str) -> i64 {
@@ -48,7 +47,6 @@ fn solve1(data: &str) -> i64 {
           cycle = cycle+1;
           cycle_to_counter.push((cycle.clone(), counter.clone()));
         }
-        // println!("(cycle {}) Counter: {} + {} == {}", cycle, counter, n, counter+n);
         counter = counter + n;
       }
      }
@@ -91,7 +89,6 @@ fn solve2(data: &str) -> String {
     if (counter-1..counter+2).contains(&(column as i64)) {
       screen[row][column] = Pixel::Lit;
     } 
-     
   }
        
   let mut s = "".to_string();
@@ -113,7 +110,6 @@ fn main() {
     println!("Part 1: {}", solve1(data));
     println!("Part 2: \n{}", solve2(data));
   }
-  
   
   mod tests {
     use super::*;
@@ -157,7 +153,6 @@ fn main() {
       assert_eq!(solve2(data), expected)
     }
   
-    
     #[bench]
     fn bench_part1(b: &mut Bencher) {
       let data = include_str!("../example.txt");
