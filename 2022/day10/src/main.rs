@@ -141,13 +141,13 @@ mod tests {
 
     #[bench]
     fn bench_part1(b: &mut Bencher) {
-        let data = include_str!("../example.txt");
+        let data = include_str!("../input.txt");
         b.iter(|| solve1(data));
     }
 
     #[bench]
     fn bench_part2(b: &mut Bencher) {
-        let data = include_str!("../example.txt");
+        let data = include_str!("../input.txt");
         b.iter(|| solve2(data));
     }
 }

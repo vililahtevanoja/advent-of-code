@@ -3,21 +3,22 @@
 extern crate test;
 
 fn parse(data: &str) -> Vec<Vec<u32>> {
-    data
-    .split("\n\n")
-    .map(|s| s.split("\n")
-        .filter_map(|n| n.parse::<u32>().ok())
+    data.split("\n\n")
+        .map(|s| {
+            s.split("\n")
+                .filter_map(|n| n.parse::<u32>().ok())
+                .collect()
+        })
         .collect()
-    ).collect()
 }
 
 fn sums(groups: Vec<Vec<u32>>) -> Vec<u32> {
-    groups.iter().map(|v| v.iter().sum()).collect() 
+    groups.iter().map(|v| v.iter().sum()).collect()
 }
 
 fn solve1(data: &str) -> u32 {
     let groups = parse(data);
-    
+
     let group_sums = sums(groups);
 
     *group_sums.iter().max().expect("should not be empty")
@@ -36,8 +37,6 @@ fn main() {
     println!("Part 1: {}", solve1(data));
     println!("Part 2: {}", solve2(data));
 }
-
-
 
 #[cfg(test)]
 mod tests {
@@ -58,13 +57,13 @@ mod tests {
 
     #[bench]
     fn bench_part1(b: &mut Bencher) {
-        let data = include_str!("../example.txt");
+        let data = include_str!("../input.txt");
         b.iter(|| solve1(data));
     }
-    
+
     #[bench]
     fn bench_part2(b: &mut Bencher) {
-        let data = include_str!("../example.txt");
+        let data = include_str!("../input.txt");
         b.iter(|| solve2(data));
     }
 }
