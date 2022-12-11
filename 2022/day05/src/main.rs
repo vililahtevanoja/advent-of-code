@@ -62,16 +62,11 @@ fn do_moves_p1(moves: Vec<Move>, stacks: &mut Vec<Stack>) {
         let mut items = Vec::new();
         {
             let from = stacks.get_mut(m.from).unwrap();
-
-            for _ in 0..m.count {
-                items.push(from.pop().unwrap())
-            }
+            items = from.split_off(from.len() - (m.count as usize));
         }
         {
             let to = stacks.get_mut(m.to).unwrap();
-            for item in items.iter() {
-                to.push(*item);
-            }
+            to.extend(items.iter().rev());
         }
     }
 }
@@ -81,15 +76,11 @@ fn do_moves_p2(moves: Vec<Move>, stacks: &mut Vec<Stack>) {
         let mut items = Vec::new();
         {
             let from = stacks.get_mut(m.from).unwrap();
-            for _ in 0..m.count {
-                items.push(from.pop().unwrap())
-            }
+            items = from.split_off(from.len() - (m.count as usize));
         }
         {
             let to = stacks.get_mut(m.to).unwrap();
-            for item in items.iter().rev() {
-                to.push(*item);
-            }
+            to.extend(items);
         }
     }
 }
