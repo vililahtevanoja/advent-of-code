@@ -61,13 +61,14 @@ fn do_moves_p1(moves: Vec<Move>, stacks: &mut Vec<Stack>) {
     for m in moves.iter() {
         let mut items = Vec::new();
         {
-            let from = stacks.get_mut(m.from as usize).unwrap();
+            let from = stacks.get_mut(m.from).unwrap();
+
             for _ in 0..m.count {
                 items.push(from.pop().unwrap())
             }
         }
         {
-            let to = stacks.get_mut(m.to as usize).unwrap();
+            let to = stacks.get_mut(m.to).unwrap();
             for item in items.iter() {
                 to.push(*item);
             }
@@ -79,13 +80,13 @@ fn do_moves_p2(moves: Vec<Move>, stacks: &mut Vec<Stack>) {
     for m in moves.iter() {
         let mut items = Vec::new();
         {
-            let from = stacks.get_mut(m.from as usize).unwrap();
+            let from = stacks.get_mut(m.from).unwrap();
             for _ in 0..m.count {
                 items.push(from.pop().unwrap())
             }
         }
         {
-            let to = stacks.get_mut(m.to as usize).unwrap();
+            let to = stacks.get_mut(m.to).unwrap();
             for item in items.iter().rev() {
                 to.push(*item);
             }
@@ -128,9 +129,21 @@ mod tests {
     }
 
     #[test]
+    fn test_part1_regression() {
+        let data = include_str!("../input.txt");
+        assert_eq!(solve1(data), "MQTPGLLDN")
+    }
+
+    #[test]
     fn test_part2() {
         let data = include_str!("../example.txt");
         assert_eq!(solve2(data), "MCD")
+    }
+
+    #[test]
+    fn test_part2_regression() {
+        let data = include_str!("../input.txt");
+        assert_eq!(solve2(data), "LVZPSTTCZ")
     }
 
     #[bench]
