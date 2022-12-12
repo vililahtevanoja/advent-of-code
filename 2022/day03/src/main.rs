@@ -97,6 +97,18 @@ mod tests {
         assert_eq!(solve2(data), 70)
     }
 
+    #[test]
+    fn test_part1_regression() {
+        let data = include_str!("../input.txt");
+        assert_eq!(solve1(data), 7831)
+    }
+
+    #[test]
+    fn test_part2_regression() {
+        let data = include_str!("../input.txt");
+        assert_eq!(solve2(data), 2683)
+    }
+
     #[bench]
     fn bench_part1(b: &mut Bencher) {
         let data = include_str!("../input.txt");
