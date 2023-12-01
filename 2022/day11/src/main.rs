@@ -48,12 +48,16 @@ impl Operation {
 
 #[derive(Debug)]
 struct Monkeys {
+    count: usize,
     monkeys: Vec<Monkey>,
 }
 
 impl Monkeys {
     fn from(monkeys: Vec<Monkey>) -> Monkeys {
-        Monkeys { monkeys: monkeys }
+        Monkeys {
+            count: monkeys.len(),
+            monkeys: monkeys,
+        }
     }
     fn push_item_to(&mut self, i: usize, item: i64) {
         self.monkeys[i].items.borrow_mut().push(item);
@@ -131,20 +135,22 @@ impl Monkey {
     }
 }
 
-fn parse(data: &str) -> Vec<Monkey> {
-    data.split("\n\n")
+fn parse(data: &str) -> Monkeys {
+    let monkeys = data
+        .split("\n\n")
         .map(Monkey::from)
-        .collect::<Vec<Monkey>>()
+        .collect::<Vec<Monkey>>();
+    Monkeys::from(monkeys)
 }
 
 fn solve1(data: &str) -> usize {
-    let mut monkeys = parse(data);
-    let nom_monkeys = monkeys.len();
-    let mut monkeyInspections = vec![0usize; monkeys.len()];
+    let mut monkeys: Monkeys = parse(data);
+    let num_monkeys = monkeys.count;
+    let mut monkeyInspections = vec![0usize; num_monkeys];
     println!("{:?}", monkeys);
     for _ in 0..1 {
-        for i in (0..nom_monkeys) {
-            let monkey = &monkeys[i];
+        for i in 0..num_monkeys {
+            let mut monkey = monkeys[i];
             let getPrevInspections = monkeyInspections.get_mut(i).unwrap();
             monkeyInspections[i] = *getPrevInspections + monkey.items.borrow().len();
             for item in monkey.items.borrow().iter() {
@@ -155,7 +161,7 @@ fn solve1(data: &str) -> usize {
                 } else {
                     monkey.test_false
                 };
-                monkeys[throw_to].push_item(worry_level);
+                monkeys.push_item_to(i, worry_level);
             }
         }
     }
