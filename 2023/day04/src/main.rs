@@ -17,28 +17,20 @@ struct Card {
 
 impl Card {
     fn parse(s: &str) -> Card {
-        let mut line_iterator = s.split(":");
-        let id: usize = line_iterator
-            .next()
-            .unwrap()
-            .split(" ")
-            .last()
-            .unwrap()
-            .parse::<usize>()
-            .unwrap();
-        let mut numbers_iterator = line_iterator.next().unwrap().split("|");
-        let winning_numbers = numbers_iterator
-            .next()
-            .unwrap()
+        let (card_part, rest) = s.split_once(":").unwrap();
+        let id = card_part
             .split_ascii_whitespace()
-            .filter(|n| !n.is_empty())
+            .last()
+            .map(|s| s.parse::<usize>())
+            .unwrap()
+            .unwrap();
+        let (winning_numbers_str, numbers_str) = rest.split_once("|").unwrap();
+        let winning_numbers = winning_numbers_str
+            .split_ascii_whitespace()
             .map(|n| n.parse::<u8>().unwrap())
             .collect();
-        let numbers = numbers_iterator
-            .next()
-            .unwrap()
+        let numbers = numbers_str
             .split_ascii_whitespace()
-            .filter(|n| !n.is_empty())
             .map(|n| n.parse::<u8>().unwrap())
             .collect();
         Card {
