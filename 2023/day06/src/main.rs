@@ -16,7 +16,8 @@ impl Race {
                 let distance = (self.time - time_pressed) * speed;
                 (time_pressed, distance)
             })
-            .filter(|(_, distance)| distance > &self.best_distance)
+            .skip_while(|(_, distance)| distance <= &self.best_distance)
+            .take_while(|(_, distance)| distance > &self.best_distance)
             .map(|(time_pressed, _)| time_pressed)
             .collect::<Vec<_>>()
     }
