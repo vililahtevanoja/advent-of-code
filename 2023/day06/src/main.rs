@@ -10,16 +10,25 @@ struct Race {
 
 impl Race {
     fn get_button_hold_times_to_win(&self) -> Vec<usize> {
-        (1..self.time)
-            .map(|time_pressed| {
+        let upward = 1..self.time;
+        let downward = (1..self.time).rev();
+        let range_start = upward
+            .clone()
+            .find(|time_pressed| {
                 let speed = time_pressed;
                 let distance = (self.time - time_pressed) * speed;
-                (time_pressed, distance)
+                distance > self.best_distance
             })
-            .skip_while(|(_, distance)| distance <= &self.best_distance)
-            .take_while(|(_, distance)| distance > &self.best_distance)
-            .map(|(time_pressed, _)| time_pressed)
-            .collect::<Vec<_>>()
+            .unwrap();
+        let range_end = downward
+            .clone()
+            .find(|time_pressed| {
+                let speed = time_pressed;
+                let distance = (self.time - time_pressed) * speed;
+                distance > self.best_distance
+            })
+            .unwrap();
+        (range_start..range_end).collect()
     }
 }
 
