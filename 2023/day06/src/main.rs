@@ -28,7 +28,7 @@ impl Race {
                 distance > self.best_distance
             })
             .unwrap();
-        (range_start..range_end).collect()
+        (range_start..=range_end).collect()
     }
 }
 
@@ -127,6 +127,18 @@ mod tests {
     fn test_part2() {
         let data = include_str!("../example.txt");
         assert_eq!(solve2(data), 71503)
+    }
+
+    #[test]
+    fn test_part1_actual() {
+        let data = include_str!("../input.txt");
+        assert_eq!(solve1(data), 170000)
+    }
+
+    #[test]
+    fn test_part2_actual() {
+        let data = include_str!("../input.txt");
+        assert_eq!(solve2(data), 20537782)
     }
 
     #[bench]
